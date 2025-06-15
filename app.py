@@ -162,6 +162,7 @@ if st.button("Compare"):
         prices = np.random.normal(loc=base_price, scale=0.2, size=10)
         trend_df = pd.DataFrame({'Date': dates, 'Price': prices})
         st.line_chart(trend_df.set_index('Date'))
+
     st.markdown("### 🗺️ Location of Selected Country")
     country_coords = {
         "usa": [37.0902, -95.7129],
@@ -170,15 +171,19 @@ if st.button("Compare"):
         "spain": [40.4637, -3.7492],
         "india": [20.5937, 78.9629],
         "denmark": [56.2639, 9.5018]
-     }
-     coord = country_coords.get(country.lower())
-     if coord:
-        map_ = folium.Map(location=coord, zoom_start=4)
-        folium.Marker(coord, tooltip=f"{country.title()} 🗺️").add_to(map_)
-        st_folium(map_, width=700)
+    }
+    coord = country_coords.get(country.lower())
+    if coord:
+        # Show world map with pin
+        map_ = folium.Map(location=[20, 0], zoom_start=2, tiles="CartoDB positron")
+        folium.Marker(
+            location=coord,
+            tooltip=f"{country.title()} 🗺️",
+            icon=folium.Icon(color="red", icon="info-sign")
+        ).add_to(map_)
+        st_folium(map_, width=800, height=450)
     else:
-        st.warning("Map location not found.")
-
+        st.warning("🌍 Location not found on world map.")
 
 # ---------- Sidebar with Smart Tips ----------
 with st.sidebar:

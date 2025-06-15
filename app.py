@@ -109,26 +109,25 @@ if st.button("Compare"):
     st.markdown(comparison_html, unsafe_allow_html=True)
 
     if st.checkbox("📈 Show simulated price trend"):
-    dates = pd.date_range(end=pd.Timestamp.today(), periods=10)
+        dates = pd.date_range(end=pd.Timestamp.today(), periods=10)
 
-    # Try to extract a price from any store for that product
-    base_price = None
-    for store_prices in data[country].values():
-        price_str = store_prices.get(product)
-        if price_str:
-            try:
-                base_price = float(''.join(c for c in price_str if c.isdigit() or c == '.'))
-                break
-            except ValueError:
-                continue
+        # Try to find a valid price from any store
+        base_price = None
+        for store_prices in data[country].values():
+            price_str = store_prices.get(product)
+            if price_str:
+                try:
+                    base_price = float(''.join(c for c in price_str if c.isdigit() or c == '.'))
+                    break
+                except ValueError:
+                    continue
 
-    if base_price:
-        prices = np.random.normal(loc=base_price, scale=0.2, size=10)
-        trend_df = pd.DataFrame({'Date': dates, 'Price': prices})
-        st.line_chart(trend_df.set_index('Date'))
-    else:
-        st.warning("No valid price found to simulate trend.")
-
+        if base_price:
+            prices = np.random.normal(loc=base_price, scale=0.2, size=10)
+            trend_df = pd.DataFrame({'Date': dates, 'Price': prices})
+            st.line_chart(trend_df.set_index('Date'))
+        else:
+            st.warning("No valid price found to simulate trend.")
 
 # ---------- Sidebar with Smart Tips ----------
 with st.sidebar:

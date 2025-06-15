@@ -37,4 +37,4 @@ Pushed my project (with app.py, store_price_data.json, and requirements.txt) to 
 
 # Corresponding link to the app
 
-https://project-hbh5unscnnzsnwik2yyn65.streamlit.app
+https://geosmartbot.streamlit.app

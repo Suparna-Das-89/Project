@@ -136,7 +136,6 @@ with col2:
     available_products = list(next(iter(data[country].values())).keys())
     categorized = categorize_items(available_products)
 
-    # Add emojis to categories
     category_emojis = {
         "Dairy": "🧀",
         "Grains": "🌾",
@@ -150,22 +149,19 @@ with col2:
     }
     categories_display = [f"{category_emojis.get(cat, '')} {cat}" for cat in categorized.keys()]
     selected_display = st.selectbox("📦 Choose a category", categories_display)
-    category = selected_display.split(" ", 1)[1]  # remove emoji
+    category = selected_display.split(" ", 1)[1]
     product = st.selectbox("🔍 Select a product", sorted(categorized[category]))
 
 # ---------- Compare Button ----------
 if st.button("Compare"):
     st.markdown(compare_prices(data, product, country), unsafe_allow_html=True)
 
-    # ---------- Optional Trend Chart ----------
     if st.checkbox("📈 Show simulated price trend"):
         dates = pd.date_range(end=pd.Timestamp.today(), periods=10)
         base_price = float(next(iter(data[country].values())).get(product, 2))
         prices = np.random.normal(loc=base_price, scale=0.2, size=10)
         trend_df = pd.DataFrame({'Date': dates, 'Price': prices})
         st.line_chart(trend_df.set_index('Date'))
-
-    # ---------- World Map ----------
     st.markdown("### 🗺️ Location of Selected Country")
     country_coords = {
         "usa": [37.0902, -95.7129],
@@ -174,14 +170,15 @@ if st.button("Compare"):
         "spain": [40.4637, -3.7492],
         "india": [20.5937, 78.9629],
         "denmark": [56.2639, 9.5018]
-    }
-    coord = country_coords.get(country.lower())
-    if coord:
+     }
+     coord = country_coords.get(country.lower())
+     if coord:
         map_ = folium.Map(location=coord, zoom_start=4)
         folium.Marker(coord, tooltip=f"{country.title()} 🗺️").add_to(map_)
         st_folium(map_, width=700)
     else:
         st.warning("Map location not found.")
+
 
 # ---------- Sidebar with Smart Tips ----------
 with st.sidebar:
@@ -189,7 +186,6 @@ with st.sidebar:
     st.info(random.choice([
         "💰 Prices can vary ~20% across stores — compare before you shop!",
         "📦 Use category filters to find specific items fast.",
-        "🌍 More countries and supermarkets coming soon!",
         "🛒 You can plug in real-time APIs when needed!"
     ]))
 

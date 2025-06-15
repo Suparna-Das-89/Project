@@ -4,7 +4,6 @@ import difflib
 import folium
 from streamlit_folium import st_folium
 import pandas as pd
-import numpy as np
 import random
 
 # ---------- Data Handling ----------
@@ -88,7 +87,7 @@ with col2:
     category = selected_display.split(" ", 1)[1]
     product = st.selectbox("🔍 Select a product", sorted(categorized[category]))
 
-# ---------- World Map Display (Always Visible) ----------
+# ---------- World Map Display ----------
 country_coords = {
     "usa": [37.0902, -95.7129], "uk": [55.3781, -3.4360],
     "germany": [51.1657, 10.4515], "spain": [40.4637, -3.7492],
@@ -107,27 +106,6 @@ else:
 if st.button("Compare"):
     comparison_html = compare_prices(data, product, country)
     st.markdown(comparison_html, unsafe_allow_html=True)
-
-    if st.checkbox("📈 Show simulated price trend"):
-        dates = pd.date_range(end=pd.Timestamp.today(), periods=10)
-
-        # Try to find a valid price from any store
-        base_price = None
-        for store_prices in data[country].values():
-            price_str = store_prices.get(product)
-            if price_str:
-                try:
-                    base_price = float(''.join(c for c in price_str if c.isdigit() or c == '.'))
-                    break
-                except ValueError:
-                    continue
-
-        if base_price:
-            prices = np.random.normal(loc=base_price, scale=0.2, size=10)
-            trend_df = pd.DataFrame({'Date': dates, 'Price': prices})
-            st.line_chart(trend_df.set_index('Date'))
-        else:
-            st.warning("No valid price found to simulate trend.")
 
 # ---------- Sidebar with Smart Tips ----------
 with st.sidebar:
